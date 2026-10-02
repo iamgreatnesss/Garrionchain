@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>garrionchain</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&family=Silkscreen&display=swap">
+<style>
+:root{--bg:#f5f4e8;--sf:#fff;--s2:#ecebdb;--ln:#d9d7c4;--tx:#15150f;--mu:#68675a;--ac:#d6f700;--at:#4f5c00;--bad:#c2351d;--ok:#2c7a31;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b09;--sf:#151513;--s2:#1e1e1b;--ln:#2d2d28;--tx:#f3f2e6;--mu:#8f8e80;--ac:#dcff1e;--at:#dcff1e;--bad:#ff7b66;--ok:#7dffa8}}
+:root[data-theme="dark"]{--bg:#0b0b09;--sf:#151513;--s2:#1e1e1b;--ln:#2d2d28;--tx:#f3f2e6;--mu:#8f8e80;--ac:#dcff1e;--at:#dcff1e;--bad:#ff7b66;--ok:#7dffa8}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 16px/1.5 "DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.top{background:#000;color:#f3f2e6;padding:18px 18px 22px}
+.wrap{max-width:680px;margin:0 auto}
+.bar{display:flex;align-items:center;gap:10px}
+.mark{font:400 19px "Silkscreen",monospace;color:#dcff1e;letter-spacing:.5px;flex:1}
+.cta{background:#dcff1e;color:#000;border:0;border-radius:999px;padding:9px 16px;font-weight:700}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:22px}
+h1{font:800 clamp(30px,8vw,44px)/1.02 "Bricolage Grotesque",sans-serif;margin:0;letter-spacing:-.5px;max-width:11em}
+.hero p{margin:10px 0 0;color:#a9a89a;max-width:30em}
+.pill{display:inline-block;margin-top:14px;font-size:12px;color:#000;background:#dcff1e;border-radius:999px;padding:2px 10px}
+.srch{padding:14px 18px 0}
+.srch input{width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--ln);margin-top:12px}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;padding:0 12px;scrollbar-width:none}
+nav button{background:none;border:0;padding:13px 12px;color:var(--mu);font-weight:500;white-space:nowrap;border-bottom:3px solid transparent}
+nav button.on{color:var(--tx);font-weight:700;border-color:var(--ac)}
+main{padding:16px 18px 40px}
+.fl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip,select{background:var(--sf);border:1px solid var(--ln);border-radius:999px;padding:7px 14px}
+.chip.on{background:var(--ac);color:#000;border-color:var(--ac);font-weight:700}
+.note{background:var(--s2);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.note b{font:800 18px "Bricolage Grotesque",sans-serif;display:block}
+.note span{color:var(--mu);font-size:14px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px;margin-bottom:12px}
+.card.feat{border-color:var(--ac);box-shadow:inset 3px 0 0 var(--ac)}
+.row{display:flex;align-items:center;gap:10px}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#000;background:hsl(var(--h) 70% 62%);flex:none}
+.who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.who span{color:var(--mu);font-size:13px}
+.tag{font-style:normal;font-size:12px;background:var(--s2);border-radius:999px;padding:2px 9px;color:var(--at)}
+.card p{margin:12px 0;white-space:pre-line;overflow-wrap:anywhere}
+.card p.mu{color:var(--mu);font-size:13px;margin:10px 0 6px}
+.act{display:flex;align-items:center;gap:8px}
+.vote,.ghost{background:none;border:1px solid var(--ln);border-radius:999px;padding:6px 13px;font-size:14px}
+.vote.on{background:var(--ac);color:#000;border-color:var(--ac);font-weight:700}
+.ghost{border-color:transparent;color:var(--mu)}
+.x{margin-left:auto;background:var(--tx);color:var(--bg);text-decoration:none;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:700}
+.badge{border-radius:999px;padding:2px 11px;font-size:13px;font-weight:700}
+.badge.pending{background:var(--s2);color:var(--mu)}.badge.approved{background:var(--ac);color:#000}.badge.rejected{background:var(--bad);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stats div{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px}
+.stats b{font:800 26px "Bricolage Grotesque",sans-serif;display:block}
+.stats span{color:var(--mu);font-size:13px}
+h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:22px 0 10px}
+.inp{width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.btn{background:var(--ac);color:#000;border:0;border-radius:12px;padding:11px 18px;font-weight:700}
+.btn.s{background:var(--s2);color:var(--tx)}.btn.d{background:var(--bad);color:#fff}
+.empty{text-align:center;color:var(--mu);padding:36px 12px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:20}
+.sheet.open{display:flex}
+.panel{background:var(--bg);width:100%;max-width:680px;margin:0 auto;border-radius:22px 22px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+.panel h3{font:800 22px "Bricolage Grotesque",sans-serif;margin:0 0 6px}
+.panel small{display:block;color:var(--mu);margin:0 0 14px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:12px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;font-size:14px}
+#toast.on{opacity:1}
+footer{padding:0 18px 30px;color:var(--mu);font-size:13px;text-align:center}
+footer a{color:var(--mu)}
+.mrow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--ln)}
+.mrow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.mrow button{padding:6px 11px;font-size:13px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* liquid glass */
+:root{--gl:rgba(255,255,255,.5);--gb:rgba(255,255,255,.75);--gp:rgba(255,255,255,.8);--gs:0 10px 34px rgba(60,60,10,.14)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--gl:rgba(255,255,255,.07);--gb:rgba(255,255,255,.15);--gp:rgba(26,26,22,.78);--gs:0 10px 34px rgba(0,0,0,.5)}}
+:root[data-theme="dark"]{--gl:rgba(255,255,255,.07);--gb:rgba(255,255,255,.15);--gp:rgba(26,26,22,.78);--gs:0 10px 34px rgba(0,0,0,.5)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 38% at 12% 6%,rgba(220,255,30,.34),transparent 70%),radial-gradient(50% 34% at 95% 42%,rgba(255,176,70,.2),transparent 70%),radial-gradient(60% 40% at 25% 100%,rgba(100,255,170,.2),transparent 70%)}
+.card,.stats div,.note,.chip,.inp,.srch input,nav,.panel,#toast,.mrow button.s{background:var(--gl);border:1px solid var(--gb);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);box-shadow:var(--gs),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08)}
+.card.feat{border-color:var(--ac)}
+.chip.on,.vote.on{background:var(--ac);border-color:var(--ac)}
+.panel{background:var(--gp);border-radius:28px 28px 0 0}
+#toast{background:var(--gp);color:var(--tx);bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.top{width:calc(100% - 24px);max-width:704px;margin:12px auto 0;border-radius:30px;background:rgba(6,6,4,.62);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(26px) saturate(160%);backdrop-filter:blur(26px) saturate(160%);box-shadow:0 14px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.25)}
+.hw{display:inline-block;will-change:transform,opacity}
+nav{position:fixed;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:12px;right:12px;width:auto;max-width:520px;margin:0 auto;border-radius:28px;z-index:10}
+nav .wrap{display:flex;gap:2px;padding:6px;overflow-x:auto}
+nav button{flex:1 1 auto;border:0;border-radius:22px;padding:11px 8px;font-size:13px;color:var(--tx);background:none}
+nav button.on{background:var(--ac);color:#000;font-weight:700}
+main{padding-bottom:120px}
+.card,.stats,.note{will-change:transform,opacity}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="bar"><span class="mark" id="logo"></span><button class="cta" data-a="open">Submit a post</button></div>
+  <div class="hero"><div><h1><span class="hw">Every</span> <span class="hw">$GARRI</span> <span class="hw">post.</span> <span class="hw">One</span> <span class="hw">feed.</span></h1><p>Posts from the community, degenBRO, and official announcements, so nothing gets missed.</p></div><div id="hero" aria-hidden="true"></div></div>
+</div></header>
+<div class="srch"><div class="wrap"><input id="q" type="search" placeholder="Search posts or a handle" aria-label="Search posts"></div></div>
+<nav id="tabs"><div class="wrap"></div></nav>
+<main><div class="wrap" id="app"></div></main>
+<footer>Community-run feed for $GARRI. Posts open on X. <a href="#mod">Moderator</a></footer>
+
+<div class="sheet" id="sheet"><div class="panel">
+  <h3>Submit a post</h3>
+  <small>Paste an X post link. We check for $GARRI, duplicates, and scam patterns before it goes live.</small>
+  <input class="inp" id="url" placeholder="https://x.com/handle/status/123..." inputmode="url" aria-label="X post link">
+  <small>Most posts go live 2 to 5 minutes after the check.</small>
+  <div style="display:flex;gap:8px"><button class="btn" data-a="send">Submit post</button><button class="btn s" data-a="close">Cancel</button></div>
+</div></div>
+<div id="toast" role="status"></div>
+
+<script>
+  const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hue=h=>[...h].reduce((a,c)=>a+c.charCodeAt(0),0)*37%360;
+const ago=m=>m<1?'now':m<60?m+'m':m<1440?Math.floor(m/60)+'h':Math.floor(m/1440)+'d';
+const pile=w=>`<svg viewBox="0 0 18 10" width="${w}" shape-rendering="crispEdges"><path fill="#f6e9ae" d="M7 0h4v1H7zM6 1h6v1H6zM5 2h8v1H5z"/><path fill="#e0c970" d="M4 3h10v1H4zM3 4h12v1H3z"/><path fill="#8a5a33" d="M1 5h16v2H1z"/><path fill="#5e3c20" d="M2 7h2v3H2zM14 7h2v3h-2z"/></svg>`;
+$('#logo').innerHTML=pile(26)+' garrionchain';$('#logo').style.cssText='display:flex;align-items:center;gap:10px';
+$('#hero').innerHTML=pile(104);
+
+const dev=(()=>{try{let d=localStorage.getItem('gc_dev');if(!d){d=crypto.randomUUID();localStorage.setItem('gc_dev',d)}return d}catch(e){return 'anon-'+Math.random().toString(36).slice(2)+Date.now()}})();
+async function api(a,o={}){const r=await fetch('/api/'+a+(o.q?'?'+new URLSearchParams(o.q):''),{method:o.body?'POST':'GET',headers:{'content-type':'application/json',...(o.h||{})},body:o.body?JSON.stringify(o.body):undefined});
+const j=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(j.error||'Something went wrong. Try again.'),{status:r.status});return j}
+const since=d=>{const m=Math.max(0,Math.floor((Date.now()-new Date(d))/6e4));return m<1?'now':m<60?m+'m':m<1440?Math.floor(m/60)+'h':Math.floor(m/1440)+'d'};
+let S={view:'c',sort:'latest',q:'',mod:false,key:'',lkq:''},D={posts:[],mine:[],lk:[],mod:null,voted:new Set(),ld:true},tm;
+try{S.key=sessionStorage.getItem('gc_key')||''}catch(e){}
+const TABS=[['c','Creators'],['degen','degenBRO'],['ann','Announcements'],['mine','My posts']];
+
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2800)}
+function card(p){const nm=p.author_name||p.handle||'?',v=D.voted.has(p.id);
+return `<article class="card ${p.tab==='degen'?'feat':''}"><div class="row"><div class="av" style="--h:${hue(p.handle||'x')}">${esc(nm[0].toUpperCase())}</div><div class="who"><b>${esc(nm)}</b><span>@${esc(p.handle)}</span></div>${p.tab==='ann'?'<i class="tag">Announcement</i>':''}<span style="color:var(--mu);font-size:13px">${since(p.approved_at||p.created_at)}</span></div>
+<p>${esc(p.body)}</p>
+<div class="act"><button class="vote ${v?'on':''}" data-a="vote" data-id="${p.id}" aria-label="Upvote">▲ ${p.upvotes}</button><button class="ghost" data-a="rep" data-id="${p.id}">Report</button><a class="x" data-a="click" data-id="${p.id}" href="${esc(p.url)}" target="_blank" rel="noopener">View on X</a></div></article>`}
+const cards=a=>D.ld?'<div class="empty">Loading…</div>':a.length?a.map(card).join(''):`<div class="empty">${S.q?'No posts match your search.':'Nothing here yet. Submit a post to start this tab.'}</div>`;
+  async function load(){if(S.view==='mine'||S.mod)return;D.ld=true;render();
+try{const j=await api('posts',{q:{tab:S.view,sort:S.sort,q:S.q,device:dev}});D.posts=j.posts;D.voted=new Set(j.voted)}catch(e){D.posts=[];toast('Could not load posts. Check your connection.')}
+D.ld=false;render()}
+async function loadMine(){try{D.mine=(await api('mine',{q:{device:dev}})).posts}catch(e){}if(S.view==='mine'&&!S.mod)paintMine()}
+
+const viewMine=()=>`<div class="stats" id="mstats"></div><button class="btn" data-a="open" style="margin-bottom:14px">Submit a post</button><div id="mlist"></div>
+<h2>Look up a handle</h2><input class="inp" id="lk" placeholder="@handle" value="${esc(S.lkq)}" aria-label="Look up an X handle"><div id="lkr">${D.lk.map(card).join('')}</div>`;
+function paintMine(){const m=D.mine,ap=m.filter(x=>x.status==='approved');
+$('#mstats').innerHTML=`<div><b>${m.length}</b><span>Submitted</span></div><div><b>${ap.length}</b><span>Approved</span></div><div><b>${ap.reduce((s,x)=>s+x.upvotes,0)}</b><span>Upvotes</span></div>`;
+$('#mlist').innerHTML=m.length?m.map(x=>{const st=x.status,cls=st==='review'?'pending':st==='removed'?'rejected':st,
+lab={pending:'Pending',review:'In review',approved:'Approved',rejected:'Rejected',removed:'Removed'}[st],
+note=st==='pending'?'Auto-check around '+new Date(x.check_after).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):st==='approved'?'▲ '+x.upvotes+' upvotes. Live on the site.':st==='review'?'A moderator will check this one.':st==='removed'?'Removed by a moderator.':x.reason;
+return `<div class="card"><div class="row"><span class="badge ${cls}">${lab}</span><span style="color:var(--mu);font-size:13px">@${esc(x.handle||'')}</span></div><p class="mu">${esc(x.url)}</p><small style="color:${st==='rejected'?'var(--bad)':'var(--mu)'}">${esc(note||'')}</small></div>`}).join(''):'<div class="empty">Nothing submitted from this device yet. Paste an X link to get started.</div>';fx()}
+
+function viewMod(){const back='<a href="#" class="btn s" style="text-decoration:none;display:inline-block">Back to site</a>';
+if(!S.key)return `<div class="note"><b>Moderator sign-in</b><span>Enter the moderator password.</span></div><input class="inp" id="pw" type="password" placeholder="Password" aria-label="Password"><div style="display:flex;gap:8px"><button class="btn" data-a="login">Sign in</button>${back}</div>`;
+const m=D.mod;if(!m)return '<div class="empty">Loading…</div>';
+const bt=(op,id,l,c='s')=>`<button class="btn ${c}" data-a="m" data-op="${op}" data-id="${id}">${l}</button>`;
+const row=(p,b)=>`<div class="card"><b>${esc(p.author_name||p.handle)}</b> <small style="color:var(--mu)">@${esc(p.handle)}${p.reports?', '+p.reports+' reports':''}</small><p>${esc(p.body||p.url)}</p><small style="color:var(--mu)">${esc(p.reason||'')}</small><div class="act" style="margin-top:8px">${b}</div></div>`;
+return `<div class="stats"><div><b>${m.stats.pending+m.review.length}</b><span>In queue</span></div><div><b>${m.reported.length}</b><span>Reported</span></div><div><b>${m.stats.clicks}</b><span>Clicks to X</span></div></div>${back}
+<h2>Needs review</h2>${m.review.length?m.review.map(p=>row(p,bt('approve',p.id,'Approve','')+bt('reject',p.id,'Reject','d')+bt('ban',p.id,'Ban submitter'))).join(''):'<div class="empty">Nothing to review.</div>'}
+<h2>Reports</h2>${m.reported.length?m.reported.map(p=>row(p,bt('remove',p.id,'Remove','d')+bt('ban',p.id,'Ban submitter')+bt('dismiss',p.id,'Dismiss'))).join(''):'<div class="empty">No open reports.</div>'}
+<h2>Live posts and private click counts</h2>${m.posts.length?m.posts.map(p=>`<div class="mrow"><span>@${esc(p.handle)}: ${esc(p.body||'')}</span><small style="color:var(--mu)">${p.clicks} clicks</small>${p.tab!=='ann'?bt('tag',p.id,'Make announcement'):''}${bt('remove',p.id,'Remove','d')}</div>`).join(''):'<div class="empty">No live posts yet.</div>'}`}
+async function mod(op,id){try{D.mod=await api('mod',{body:{op,id},h:{'x-mod-key':S.key}})}catch(e){if(e.status===401){S.key='';try{sessionStorage.removeItem('gc_key')}catch(x){}toast('Wrong password')}else toast(e.message)}render()}
+
+function render(){$('#tabs').style.display=$('.srch').style.display=S.mod?'none':'';
+if(S.mod){$('#app').innerHTML=viewMod();return}
+$('#tabs .wrap').innerHTML=TABS.map(([k,l])=>`<button class="${S.view===k?'on':''}" data-a="tab" data-v="${k}">${l}</button>`).join('');
+const nt=(t,s)=>`<div class="note"><b>${t}</b><span>${s}</span></div>`;let h;
+if(S.view==='c')h=nt('Creators','Contests and content the community makes about GARRI.')+`<div class="fl"><button class="chip ${S.sort==='latest'?'on':''}" data-a="sort" data-v="latest">Latest</button><button class="chip ${S.sort==='top'?'on':''}" data-a="sort" data-v="top">Top</button></div>`+cards(D.posts);
+else if(S.view==='degen')h=nt('degenBRO','Everything he posts about $GARRI, in one place.')+cards(D.posts);
+else if(S.view==='ann')h=nt('Announcements','The latest official news from GARRI.')+cards(D.posts);
+else h=viewMine();
+$('#app').innerHTML=h;if(S.view==='mine')paintMine();fx()}
+
+async function send(){const v=$('#url').value.trim();
+if(!/^https?:\/\/(www\.|mobile\.)?(x|twitter)\.com\/[A-Za-z0-9_]{1,15}\/status\/\d+/i.test(v))return toast('That is not an X post link. Copy the link from the post’s share menu.');
+try{await api('submit',{body:{url:v,device:dev}});$('#url').value='';$('#sheet').classList.remove('open');S.view='mine';render();await loadMine();toast('Submitted. We’ll check it shortly.')}catch(e){toast(e.message)}}
+
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=+b.dataset.id;
+if(a==='tab'){S.view=b.dataset.v;S.q='';$('#q').value='';if(S.view==='mine'){render();loadMine()}else load()}
+else if(a==='sort'){S.sort=b.dataset.v;load()}
+else if(a==='vote'){try{const j=await api('vote',{body:{id,device:dev}});[...D.posts,...D.lk].forEach(p=>{if(p.id===id)p.upvotes=j.upvotes});j.voted?D.voted.add(id):D.voted.delete(id);render()}catch(x){toast(x.message)}}
+else if(a==='rep'){try{await api('report',{body:{id,device:dev}});toast('Reported. A moderator will review it.')}catch(x){toast(x.message)}}
+else if(a==='click'){fetch('/api/click',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id}),keepalive:true}).catch(()=>{})}
+else if(a==='open'){$('#sheet').classList.add('open');setTimeout(()=>$('#url').focus(),50)}
+else if(a==='close')$('#sheet').classList.remove('open');
+else if(a==='send')send();
+else if(a==='login'){S.key=$('#pw').value;try{sessionStorage.setItem('gc_key',S.key)}catch(x){}mod('list')}
+else if(a==='m')mod(b.dataset.op,id)});
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')e.target.classList.remove('open')});
+document.addEventListener('input',e=>{
+if(e.target.id==='q'){S.q=e.target.value;clearTimeout(tm);tm=setTimeout(()=>{if(S.view==='mine')S.view='c';load()},300)}
+if(e.target.id==='lk'){S.lkq=e.target.value;clearTimeout(tm);tm=setTimeout(async()=>{const q=S.lkq.trim().replace(/^@/,'');
+ if(!q){D.lk=[];$('#lkr').innerHTML='';return}
+ try{const j=await api('posts',{q:{handle:q,device:dev}});D.lk=j.posts;j.voted.forEach(i=>D.voted.add(i));
+ $('#lkr').innerHTML=D.lk.map(card).join('')||'<div class="empty">No approved posts from that handle yet.</div>';fx()}catch(x){toast(x.message)}},350)}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='url')send();if(e.key==='Enter'&&e.target.id==='pw')$('[data-a=login]').click()});
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let raf=0;
+const cl=(v)=>Math.min(Math.max(v,0),1);
+function fx(){raf=0;if(RM)return;
+const p=cl(scrollY/280),vh=innerHeight;
+document.querySelectorAll('.hw').forEach((w,i)=>{const d=i%2?1:-1;
+ w.style.transform=`translate(${d*p*(14+i*10)}px,${-p*(26+i*9)}px)`;
+ w.style.opacity=Math.max(0,1-p*(1.15+i*.12));
+ w.style.filter=`blur(${p*5}px)`});
+const hp=$('.hero p'),pl=$('#hero'),pi=$('.pill');
+if(hp){hp.style.opacity=Math.max(0,1-p*1.6);hp.style.transform=`translateY(${-p*30}px)`}
+if(pi)pi.style.opacity=Math.max(0,1-p*1.8);
+if(pl){pl.style.transform=`translateY(${p*36}px) rotate(${p*8}deg)`;pl.style.opacity=1-p*.9}
+document.querySelectorAll('.card,.stats,.note').forEach(c=>{
+ const r=c.getBoundingClientRect(),t=cl(r.bottom/160),b=cl((vh-r.top-90)/180),k=Math.min(t,b);
+ c.style.opacity=k<1?.08+.92*k:1;
+ c.style.transform=`translateY(${(1-b)*26-(1-t)*16}px) scale(${.97+.03*k})`})}
+const sched=()=>{raf||(raf=requestAnimationFrame(fx))};
+addEventListener('scroll',sched,{passive:true});addEventListener('resize',sched);
+function route(){S.mod=location.hash==='#mod';if(S.mod){S.key?mod('list'):render()}else if(S.view==='mine'){render();loadMine()}else load()}
+window.addEventListener('hashchange',route);
+setInterval(()=>{if(!S.mod&&S.view==='mine'&&D.mine.some(x=>x.status==='pending'))loadMine()},8000);
+loadMine();route();
+</script>
+</body>
+</html>
