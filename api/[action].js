@@ -80,7 +80,6 @@ const H = {
     if (error) throw error;
     return { ok: true };
   },
-
   async vote(req) {
     const { id, device } = req.body;
     if (!id || !device) throw fail(400, 'Bad request');
@@ -111,4 +110,47 @@ const H = {
   },
 
   async mod(req) {
-    const k = Buffer.from(String(req.headers['x-mod-k
+    const k = Buffer.from(String(req.headers['x-mod-key'] || '')), pw = Buffer.from(process.env.MOD_PASSWORD || '');
+    if (!pw.length || k.length !== pw.length || !crypto.timingSafeEqual(k, pw)) throw fail(401, 'Wrong password');
+    const { op, id } = req.body;
+    if (id) {
+      const { data: p } = await db.from('posts').select('handle,ip_hash').eq('id', id).single();
+      const U = {
+        approve: { status: 'approved', approved_at: new Date().toISOString(), tab: TAB_BY_HANDLE[(p.handle || '').toLowerCase()] || 'c', reports: 0 },
+        reject: { status: 'rejected', reason: 'Not accepted by a moderator.' },
+        remove: { status: 'removed' },
+        tag: { tab: 'ann' },
+        dismiss: { reports: 0 },
+      }[op];
+      if (op === 'ban') {
+        await db.from('bans').upsert({ ip_hash: p.ip_hash });
+        await db.from('posts').update({ status: 'removed' }).eq('id', id);
+      } else if (U) {
+        await db.from('posts').update(U).eq('id', id);
+        if (op === 'dismiss' || op === 'approve') await db.from('reports').delete().eq('post_id', id);
+      }
+    }
+    const F = 'id,url,handle,author_name,body,tab,status,reports,clicks,upvotes,reason';
+    const all = (await db.from('posts').select(F).order('created_at', { ascending: false }).limit(200)).data || [];
+    return {
+      review: all.filter((x) => x.status === 'review'),
+      reported: all.filter((x) => x.status === 'approved' && x.reports > 0),
+      posts: all.filter((x) => x.status === 'approved'),
+      stats: { pending: all.filter((x) => x.status === 'pending').length, clicks: all.reduce((s, x) => s + x.clicks, 0) },
+    };
+  },
+};
+
+export default async function handler(req, res) {
+  try {
+    const fn = H[req.query.action];
+    if (!fn) return res.status(404).json({ error: 'Not found' });
+    if (typeof req.body === 'string') { try { req.body = JSON.parse(req.body); } catch { req.body = {}; } }
+    req.body = req.body || {};
+    res.setHeader('Cache-Control', 'no-store');
+    res.json(await fn(req));
+  } catch (e) {
+    if (!e.status) console.error(e);
+    res.status(e.status || 500).json({ error: e.status ? e.message : 'Server error' });
+  }
+}
