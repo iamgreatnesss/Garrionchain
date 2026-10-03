@@ -134,6 +134,7 @@ const H = {
     const all = (await db.from('posts').select(F).order('created_at', { ascending: false }).limit(200)).data || [];
     return {
       review: all.filter((x) => x.status === 'review'),
+      rejected: all.filter((x) => x.status === 'rejected' && x.body),
       reported: all.filter((x) => x.status === 'approved' && x.reports > 0),
       posts: all.filter((x) => x.status === 'approved'),
       stats: { pending: all.filter((x) => x.status === 'pending').length, clicks: all.reduce((s, x) => s + x.clicks, 0) },
