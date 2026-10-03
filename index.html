@@ -218,6 +218,12 @@ function route(){S.mod=location.hash==='#mod';if(S.mod){S.key?mod('list'):render
 window.addEventListener('hashchange',route);
 setInterval(()=>{if(!S.mod&&S.view==='mine'&&D.mine.some(x=>x.status==='pending'))loadMine()},8000);
 loadMine();route();
+  const _vm=viewMod;
+viewMod=function(){let h=_vm();const m=D.mod;
+if(S.key&&m&&m.rejected&&m.rejected.length){
+const rows=m.rejected.map(p=>`<div class="card"><b>${esc(p.author_name||p.handle)}</b> <small style="color:var(--mu)">@${esc(p.handle)}</small><p>${esc(p.body||p.url)}</p><small style="color:var(--bad)">${esc(p.reason||'')}</small><div class="act" style="margin-top:8px"><button class="btn" data-a="m" data-op="approve" data-id="${p.id}">Approve anyway</button></div></div>`).join('');
+h=h.replace('<h2>Reports</h2>',()=>'<h2>Rejected by the auto-check</h2>'+rows+'<h2>Reports</h2>')}
+return h};
 </script>
 </body>
 </html>
