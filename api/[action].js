@@ -31,6 +31,7 @@ async function check(p) {
   const handle = (j.author_url || '').split('/').pop() || p.handle;
   const base = { handle, author_name: j.author_name, body };
   if (TAB_BY_HANDLE[handle.toLowerCase()] && /garri/i.test(body) && !scam(body)) return { ...base, status: 'approved', approved_at: new Date().toISOString(), tab: TAB_BY_HANDLE[handle.toLowerCase()] };
+  if (!/\$garri\b/i.test(body) && body.length > 240) return { ...base, status: 'review', reason: 'Long post: the $GARRI mention may be further down. Please check.' };
   if (!/\$garri\b/i.test(body)) return { ...base, status: 'rejected', reason: 'No $GARRI found in this post.' };
   if (scam(body)) return { ...base, status: 'review', reason: 'Flagged for a moderator to check.' };
   return { ...base, status: 'approved', approved_at: new Date().toISOString(), tab: TAB_BY_HANDLE[handle.toLowerCase()] || 'c' };
