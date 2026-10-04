@@ -74,7 +74,7 @@ const H = {
     const { count } = await db.from('posts').select('id', { count: 'exact', head: true })
       .eq('ip_hash', ip).gte('created_at', new Date(Date.now() - 36e5).toISOString());
     if (count >= 3) throw fail(429, 'Limit reached: 3 submissions per hour. Try again later.');
-    const delay = FAST ? 5 : 90 + Math.floor(Math.random() * 31);
+    const delay = FAST ? 5 : 40 + Math.floor(Math.random() * 21);
     const { error } = await db.from('posts').insert({
       tweet_id: m[2], url: `https://x.com/${m[1]}/status/${m[2]}`, handle: m[1], device, ip_hash: ip,
       check_after: new Date(Date.now() + delay * 1000).toISOString(),
