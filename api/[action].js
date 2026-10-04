@@ -31,6 +31,7 @@ async function check(p) {
   const handle = (j.author_url || '').split('/').pop() || p.handle;
   const base = { handle, author_name: j.author_name, body };
   if (TAB_BY_HANDLE[handle.toLowerCase()] && /garri/i.test(body) && !scam(body)) return { ...base, status: 'approved', approved_at: new Date().toISOString(), tab: TAB_BY_HANDLE[handle.toLowerCase()] };
+  if (body.length < 100) return { ...base, status: 'rejected', reason: 'Too short: posts need at least 100 characters.' };
   if (!/\$garri\b/i.test(body) && body.length > 240) return { ...base, status: 'review', reason: 'Long post: the $GARRI mention may be further down. Please check.' };
   if (!/\$garri\b/i.test(body)) return { ...base, status: 'rejected', reason: 'No $GARRI found in this post.' };
   if (scam(body)) return { ...base, status: 'review', reason: 'Flagged for a moderator to check.' };
@@ -73,7 +74,7 @@ const H = {
     const { count } = await db.from('posts').select('id', { count: 'exact', head: true })
       .eq('ip_hash', ip).gte('created_at', new Date(Date.now() - 36e5).toISOString());
     if (count >= 3) throw fail(429, 'Limit reached: 3 submissions per hour. Try again later.');
-    const delay = FAST ? 5 : 120 + Math.floor(Math.random() * 181);
+    const delay = FAST ? 5 : 90 + Math.floor(Math.random() * 31);
     const { error } = await db.from('posts').insert({
       tweet_id: m[2], url: `https://x.com/${m[1]}/status/${m[2]}`, handle: m[1], device, ip_hash: ip,
       check_after: new Date(Date.now() + delay * 1000).toISOString(),
